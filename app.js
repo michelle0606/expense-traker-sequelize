@@ -10,7 +10,7 @@ app.set('view engine', 'pug')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
-
+app.use(express.static('public'))
 app.use(
   session({
     secret: 'your secret key',
@@ -31,6 +31,7 @@ app.use((req, res, next) => {
 
 app.use('/', require('./routes/home'))
 app.use('/users', require('./routes/user'))
+app.use('/record', require('./routes/record'))
 
 app.listen(3000, () => {
   db.sequelize.sync()
