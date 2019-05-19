@@ -1,0 +1,36 @@
+extends layouts/main.pug
+
+block body
+  main
+    div(class="filter")
+      form(id="form" action="/" method="GET" class="row justify-content-center")
+        div(class="month")
+          select(name="month" class="month-select" OnInput='form.submit()')
+            option(value="" selected) 月份
+              each month, index in ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+                option(value=`${index+1}`) #{month}
+        div(class="type")
+          select(name="category" class="type-select" OnInput='form.submit()')
+            option(value="" selected) 類別
+              each category, index in ['家居物業', '交通出行', '休閒娛樂', '餐飲食品', '其它']
+                option(value=`${category}`) #{category}
+    div(class="total")
+      p 總金額：
+      div(id="total_amount")
+    div(class="outer")
+      each record in records
+        div(class="record_list")
+          div(class="category") 
+            i(class=`${record.category}`)
+          div(class="middle")
+            div(class="main-info")
+              div(class="type_name") #{record.name}
+              div(class="date") #{record.date.getFullYear()}/#{record.date.getMonth()+1}/#{record.date.getDate()}
+            div(class="amount") #{record.amount}
+          div(class="edit_delete")
+            a(href=`/record/${record.id}/edit`) 修改
+            form(action=`/record/${record.id}/delete?_method=DELETE` method="POST")
+              button(id="delete_button" type="submit") 刪除
+    div(class="new")
+      a(href="/record/new") 新增支出
+    

@@ -2,30 +2,35 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
+const session = require('express-session')
+const passport = require('passport')
 const db = require('./models')
-const Record = db.Record
-const User = db.User
 
 app.set('view engine', 'pug')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
-app.get('/', (req, res) => {
-  res.send('hello world')
+app.use(
+  session({
+    secret: 'your secret key',
+    resave: 'false',
+    saveUninitialized: 'false'
+  })
+)
+
+require('./config/passport')(passport)
+
+app.use(passport.initialize())
+app.use(passport.session())
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
 })
 
-app.get('/users/register', (req, res) => {
-  res.render('register')
-})
-
-app.post('/users/register', (req, res) => {
-  User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  }).then(() => res.redirect('/'))
-})
+app.use('/', require('./routes/home'))
+app.use('/users', require('./routes/user'))
 
 app.listen(3000, () => {
   db.sequelize.sync()
