@@ -2,8 +2,9 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
-
-const port = 3000
+const db = require('./models')
+const Record = db.Record
+const User = db.User
 
 app.set('view engine', 'pug')
 
@@ -14,6 +15,19 @@ app.get('/', (req, res) => {
   res.send('hello world')
 })
 
-app.listen(port, () => {
-  console.log(`App is running on port ${port}!`)
+app.get('/users/register', (req, res) => {
+  res.render('register')
+})
+
+app.post('/users/register', (req, res) => {
+  User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  }).then(() => res.redirect('/'))
+})
+
+app.listen(3000, () => {
+  db.sequelize.sync()
+  console.log(`App is running!`)
 })
