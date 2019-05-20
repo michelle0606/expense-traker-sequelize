@@ -26,6 +26,39 @@ router.post('/', authenticated, (req, res) => {
     })
 })
 
+router.get('/:id/edit', authenticated, (req, res) => {
+  User.findByPk(req.user.id).then(user => {
+    if (!user) return res.error()
+    Record.findOne({
+      where: {
+        userId: req.user.id,
+        id: req.params.id
+      }
+    }).then(record => {
+      res.render('edit', { record })
+    })
+  })
+})
+
+router.put('/:id', authenticated, (req, res) => {
+  Record.findOne({
+    where: {
+      userId: req.user.id,
+      id: req.params.id
+    }
+  }).then(record => {
+    Object.assign(record, req.body)
+    record
+      .save()
+      .then(() => {
+        return res.redirect('/')
+      })
+      .catch(err => {
+        return res.status(422).json(err)
+      })
+  })
+})
+
 router.delete('/:id/delete', authenticated, (req, res) => {
   User.findByPk(req.user.id)
     .then(user => {
