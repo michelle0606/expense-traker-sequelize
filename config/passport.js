@@ -5,22 +5,18 @@ const User = db.User
 
 module.exports = passport => {
   passport.use(
-    new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-      User.findOne({ where: { email: email } }).then(user => {
-        if (!user) {
-          return done(null, false)
-        }
+    new LocalStrategy(
+      { usernameField: 'email' },
+      async (email, password, done) => {
+        const user = await User.findOne({ where: { email: email } })
 
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-          if (err) throw err
-          if (isMatch) {
-            return done(null, user)
-          } else {
-            return done(null, false)
-          }
-        })
-      })
-    })
+        if (!user) return done(null, false)
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (isMatch) return done(null, user)
+        else return done(null, false)
+      }
+    )
   )
   passport.serializeUser((user, done) => {
     done(null, user.id)

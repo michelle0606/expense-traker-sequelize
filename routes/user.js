@@ -26,39 +26,33 @@ router.get('/register', (req, res) => {
 // 註冊檢查
 router.post('/register', (req, res) => {
   const { name, email, password, password2 } = req.body
-  User.findOne({ where: { email: email } }).then(user => {
-    if (user) {
-      res.render('register', {
-        name,
-        email,
-        password,
-        password2
-      })
-    } else if (password !== password2) {
-      res.render('register', {
-        name,
-        email,
-        password,
-        password2
-      })
-    } else {
-      const newUser = new User({
-        name,
-        email,
-        password
-      })
-
-      bcrypt
-        .genSalt(10)
-        .then(salt => bcrypt.hash(newUser.password, salt))
-        .then(hash => {
-          newUser.password = hash
-          newUser.save()
-          res.redirect('/')
+  User.findOne({ where: { email } })
+    .then(user => {
+      if (user || password !== password2) {
+        res.render('register', {
+          name,
+          email,
+          password,
+          password2
         })
-        .catch(err => console.log(err))
-    }
-  })
+      } else {
+        const newUser = new User({
+          name,
+          email,
+          password
+        })
+
+        bcrypt
+          .genSalt(10)
+          .then(salt => bcrypt.hash(newUser.password, salt))
+          .then(hash => {
+            newUser.password = hash
+            newUser.save()
+            res.redirect('/')
+          })
+      }
+    })
+    .catch(err => console.log(err))
 })
 
 router.get('/logout', (req, res) => {
