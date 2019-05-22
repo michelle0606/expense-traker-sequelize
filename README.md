@@ -1,6 +1,6 @@
 # Expense Tracker
 
-This is a website build with express and MySQL, user can easily record their spend.
+This is a website build with express and MySQL, user can easily record your spend.
 
 ## Installing
 
