@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -32,6 +36,7 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/home'))
 app.use('/users', require('./routes/user'))
 app.use('/record', require('./routes/record'))
+app.use('/auth', require('./routes/auth'))
 
 app.listen(3000, () => {
   db.sequelize.sync()
