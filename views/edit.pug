@@ -23,10 +23,14 @@ block body
                 option(value=`${category}` selected) #{category}
               else
                 option(value=`${category}`) #{category}
+        div(class="invalid-feedback")
     div(class="form-group row")
       label(for="amount" class="col-sm-3 col-form-label") 金額*：
       div(class="col-sm-9")
         input(type="text" class="form-control" id="amount" name="amount" value=`${record.amount}` required)
+        div(class="invalid-feedback")
     div(class="form-group row")
       div(class="col-sm-12 center")
         button(type="submit" class="new") 修改支出
+block script
+  script(src="/javascripts/checkInput.js")  
